@@ -67,4 +67,5 @@ C:\directory-with-files> javac openapift.java -codecomments true -input . -outpu
 ```
 
 Brought to you by your friends at Dynamic APIs
+
 [![Dynamic APIs Logo](https://www.dynamicapis.com/assets/img/dynamicapis.png)](https://www.dynamicapis.com)
