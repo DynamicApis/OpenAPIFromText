@@ -9,8 +9,6 @@
 [SwaggerInput(InputType = "QueryString", SwaggerParameter(Name = "isTest", Type = "Boolean", Description = "Indicates if the request is a test", Required = false))]
 --the route input properties
 [SwaggerInput(InputType = "Body", SwaggerParameter(Name = "RequestBody", Type = "Map<String, String>", Description = "The data", Required = true))]
-
-
 --the route response
 [SwaggerResponse(HttpStatusCode = 200, Description = "The asynchronous request was successful", Type = "Response_v1")]
 --the route response
@@ -31,7 +29,6 @@
 [SwaggerResponseHeader(HttpStatusCode = 500, Description = "Error Description", Key = "x-error-description", Value = "details about the error")]
 --the route response header
 [SwaggerResponseHeader(HttpStatusCode = 500, Description = "Error Line Number", Key = "x-error-linenumber", Value = "the line number associated to the error")]
-
 --the response object
 [SwaggerObject(Type = "Response_v1", Name = "Response_v1", Description = "The response v1")]
 --the response object property

@@ -1,10 +1,12 @@
 import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class openapift {
     
     private static InputParameters inputParameters;
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalArgumentException, RuntimeException, FileNotFoundException, IOException {
         
         //expect the following args
         // "codecomments" DEFAULT true, which will be a bool but accept true, yes, 1; else it will be considered false
