@@ -8,9 +8,9 @@ To enable the widest possible usage of the OpenAPI 2.0 Document Specification th
 
 ### Project Dependencies
 This project leverages Jackson JSON for serializing objects.
-jackson-databind-2.9.5.jar
-jackson-annotations-2.9.5.jar
-jackson-core-2.9.5.jar
+ - jackson-databind-2.9.5.jar
+ - jackson-annotations-2.9.5.jar
+ - jackson-core-2.9.5.jar
 
 # The Markup
 To simplify the initial release, markup is collected TOP DOWN. Just remember to keep the order.
