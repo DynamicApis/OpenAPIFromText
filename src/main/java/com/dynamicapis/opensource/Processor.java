@@ -1,17 +1,17 @@
+package com.dynamicapis.opensource;
+
 import java.util.Scanner;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.io.StringReader;
 import java.io.BufferedReader;
+import java.io.FileWriter;
 
 public class Processor {
     
@@ -33,9 +33,18 @@ public class Processor {
             this.obtainRawInput(sb,filePathAsString);
 		}
 		
-		System.out.println(sb.toString());
+		//System.out.println(sb.toString());
+		this.WriteToFile(inputParameters.getOutputFile(), sb);
             
         return;
+    }
+    
+    private void WriteToFile(String outputFileAbsolutePath, StringBuilder content) throws IOException{
+        File outputFile = new File(outputFileAbsolutePath);
+        FileWriter outputWriter = new FileWriter(outputFile, false); // true to append
+                                                             // false to overwrite.
+        outputWriter.write(content.toString());
+        outputWriter.close();
     }
     
     private List<String> obtainListOfFilesFromDirectory() throws IOException {

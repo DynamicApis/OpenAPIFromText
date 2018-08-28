@@ -1,9 +1,10 @@
+package com.dynamicapis.opensource;
+
 public class InputParameters {
     
     private Boolean useCodeComments;
     private String inputDirectory;
     private String outputFile;
-    private String regexMatch;
     
     public InputParameters(){
         this.useCodeComments = false;

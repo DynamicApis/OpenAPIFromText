@@ -1,1 +1,3 @@
-src/*.class
+target/*
+openapidoc.json
+*.xml
