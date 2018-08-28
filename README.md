@@ -6,6 +6,9 @@ This project uses the GNU GPLv3 License. Permissions of this strong copyleft lic
 ### Goal of Project
 To enable the widest possible usage of the OpenAPI 2.0 Document Specification through a post build process and using specific markup. By default the application will look within code comments. If you are using a Dynamic APIs documentation portal you can simply upload your output file to your portal, or use our LightHouse product to grab the json from a hosted environment.
 
+### Contribution
+While this project is in its primary development phase you must be invited as a contributor to help with development. Please contact us to become a contributor.
+
 ### Project Dependencies
 This project leverages Jackson JSON for serializing objects.
  - jackson-databind-2.9.5.jar
