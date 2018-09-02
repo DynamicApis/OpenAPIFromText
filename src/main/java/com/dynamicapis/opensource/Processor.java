@@ -13,6 +13,8 @@ import java.io.StringReader;
 import java.io.BufferedReader;
 import java.io.FileWriter;
 
+import com.oracle.json;
+
 public class Processor {
     
     private static final String NEWLINE = "\n";
@@ -43,7 +45,12 @@ public class Processor {
         File outputFile = new File(outputFileAbsolutePath);
         FileWriter outputWriter = new FileWriter(outputFile, false); // true to append
                                                              // false to overwrite.
-        outputWriter.write(content.toString());
+        //outputWriter.write(content.toString());
+        
+        String objectAsJsonString = "";
+        
+        
+        outputWriter.write(objectAsJsonString);
         outputWriter.close();
     }
     
@@ -67,14 +74,16 @@ public class Processor {
         String line = null;
         while( (line=bufReader.readLine()) != null )
         {
-            if(line.toLowerCase().contains("[swaggersecuritydefinition(") ||
+            //TODO: Replace this with REGEX
+            //Phase 1 must be on same line
+            if((line.toLowerCase().contains("[swaggersecuritydefinition(") ||
                 line.toLowerCase().contains("[swaggerroute(") ||
                     line.toLowerCase().contains("[swaggeroperation(") ||
                         line.toLowerCase().contains("[swaggerinput(") ||
                             line.toLowerCase().contains("[swaggerresponse(") ||
                                 line.toLowerCase().contains("[swaggerresponseheader(") ||
                                     line.toLowerCase().contains("[swaggerobject(") ||
-                                        line.toLowerCase().contains("[swaggerobjectproperty(")){
+                                        line.toLowerCase().contains("[swaggerobjectproperty(")) && line.toLowerCase().contains(")]")){
                 sb.append(line);
                 sb.append(NEWLINE);
             }
