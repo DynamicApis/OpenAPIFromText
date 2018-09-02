@@ -49,6 +49,8 @@ public class Processor {
         
         String objectAsJsonString = "";
         
+        com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        objectAsJsonString = objectMapper.writeValueAsString(this.inputParameters);
         
         outputWriter.write(objectAsJsonString);
         outputWriter.close();
