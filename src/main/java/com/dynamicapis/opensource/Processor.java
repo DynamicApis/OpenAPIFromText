@@ -27,32 +27,88 @@ public class Processor {
     
     public void Generate() throws RuntimeException, FileNotFoundException, IOException {
         
-        List<String> fileList = this.obtainListOfFilesFromDirectory();        
+        List<SwaggerApi> apis = new ArrayList<SwaggerApi>();
         
-        StringBuilder sb = new StringBuilder();
+        SwaggerApi api = new SwaggerApi();
+        api.setRoute("/api/v1/something");
         
-        for (String filePathAsString : fileList) {
-            this.obtainRawInput(sb,filePathAsString);
-		}
-		
-		//System.out.println(sb.toString());
-		this.WriteToFile(inputParameters.getOutputFile(), sb);
-            
+        List<SwaggerApi.SwaggerSecurityDefinition> securityDefinitions = new ArrayList<SwaggerApi.SwaggerSecurityDefinition>();
+        
+        SwaggerApi.SwaggerSecurityDefinition securityDefinition = api.new SwaggerSecurityDefinition();
+        securityDefinition.setType("oauth");
+        
+        
+        List<SwaggerApi.SwaggerSecurityDefinition.Scope> scopes = new ArrayList<SwaggerApi.SwaggerSecurityDefinition.Scope>();
+        SwaggerApi.SwaggerSecurityDefinition.Scope scope = securityDefinition.new Scope();
+        scope.setName("readaccess");
+        scope.setDescription("sets the read access");
+        
+        scopes.add(scope);
+        
+        SwaggerApi.SwaggerSecurityDefinition.Scope[] swaggerApiSecDefScopesArr = new SwaggerApi.SwaggerSecurityDefinition.Scope[scopes.size()];
+        swaggerApiSecDefScopesArr = scopes.toArray(swaggerApiSecDefScopesArr);
+        
+        securityDefinition.setScopes(swaggerApiSecDefScopesArr);
+        
+        securityDefinitions.add(securityDefinition);
+        
+        
+        SwaggerApi.SwaggerSecurityDefinition[] swaggerApiSecDefArr = new SwaggerApi.SwaggerSecurityDefinition[securityDefinitions.size()];
+        swaggerApiSecDefArr = securityDefinitions.toArray(swaggerApiSecDefArr);
+        
+        
+        api.setSecurityDefinitions(swaggerApiSecDefArr);
+        
+        apis.add(api);
+        
+        SwaggerApi[] swaggerApiArr = new SwaggerApi[apis.size()];
+        swaggerApiArr = apis.toArray(swaggerApiArr);
+        
+        this.WriteObjectToFile(inputParameters.getOutputFile(),swaggerApiArr);
+        
         return;
+        
+        
+//         List<String> fileList = this.obtainListOfFilesFromDirectory();        
+        
+//         StringBuilder sb = new StringBuilder();
+        
+//         for (String filePathAsString : fileList) {
+//             this.obtainRawInput(sb,filePathAsString);
+// 		}
+		
+// 		//System.out.println(sb.toString());
+// 		this.WriteToFile(inputParameters.getOutputFile(), sb);
+            
+//         return;
+    }
+    
+    private void WriteObjectToFile(String outputFileAbsolutePath, SwaggerApi[] apis) throws IOException{
+        File outputFile = new File(outputFileAbsolutePath);
+        FileWriter outputWriter = new FileWriter(outputFile, false); // true to append
+                                                             // false to overwrite.
+        
+        String objectAsJsonString = "";
+        
+        com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        objectAsJsonString = objectMapper.writeValueAsString(apis);
+        
+        outputWriter.write(objectAsJsonString);
+        outputWriter.close();
     }
     
     private void WriteToFile(String outputFileAbsolutePath, StringBuilder content) throws IOException{
         File outputFile = new File(outputFileAbsolutePath);
         FileWriter outputWriter = new FileWriter(outputFile, false); // true to append
                                                              // false to overwrite.
-        //outputWriter.write(content.toString());
+        outputWriter.write(content.toString());
         
-        String objectAsJsonString = "";
+        // String objectAsJsonString = "";
         
-        com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-        objectAsJsonString = objectMapper.writeValueAsString(this.inputParameters);
+        // com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        // objectAsJsonString = objectMapper.writeValueAsString(this.inputParameters);
         
-        outputWriter.write(objectAsJsonString);
+        // outputWriter.write(objectAsJsonString);
         outputWriter.close();
     }
     
