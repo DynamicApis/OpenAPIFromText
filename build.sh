@@ -1,0 +1,2 @@
+javac -sourcepath ./src/main/java -cp "dependencies/jackson-core-2.9.5.jar:dependencies/jackson-annotations-2.9.5.jar:dependencies/jackson-databind-2.9.5.jar" ./src/main/java/com/dynamicapis/opensource/*.java -d target
+jar cvfm ./target/openapift.jar ./manifest.txt -C ./target/ .
