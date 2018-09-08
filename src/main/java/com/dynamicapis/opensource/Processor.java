@@ -12,61 +12,114 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.BufferedReader;
 import java.io.FileWriter;
+import java.util.UUID;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.regex.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Processor {
     
     private static final String NEWLINE = "\n";
+    
 
     private InputParameters inputParameters;
+    private String uuid;
+    private String rawFile;
+    private String tokenizedFile;
     
     public Processor(InputParameters inputParameters){
         this.inputParameters = inputParameters;
+        this.uuid = "test";//UUID.randomUUID().toString();
+        this.rawFile = "./"+this.uuid+"-raw.txt";
+        this.tokenizedFile = "./"+this.uuid+"-raw-tokenized.txt";
     }
+    
+    // private void GenerateSample() throws RuntimeException, FileNotFoundException, IOException {
+        
+    //     List<SwaggerApi> apis = new ArrayList<SwaggerApi>();
+        
+    //     SwaggerApi api = new SwaggerApi();
+    //     api.setRoute("/api/v1/something");
+        
+    //     List<SwaggerApi.SwaggerSecurityDefinition> securityDefinitions = new ArrayList<SwaggerApi.SwaggerSecurityDefinition>();
+        
+    //     SwaggerApi.SwaggerSecurityDefinition securityDefinition = api.new SwaggerSecurityDefinition();
+    //     securityDefinition.setType("oauth");
+        
+        
+    //     List<SwaggerApi.SwaggerSecurityDefinition.Scope> scopes = new ArrayList<SwaggerApi.SwaggerSecurityDefinition.Scope>();
+    //     SwaggerApi.SwaggerSecurityDefinition.Scope scope = securityDefinition.new Scope();
+    //     scope.setName("readaccess");
+    //     scope.setDescription("sets the read access");
+        
+    //     scopes.add(scope);
+        
+    //     SwaggerApi.SwaggerSecurityDefinition.Scope[] swaggerApiSecDefScopesArr = new SwaggerApi.SwaggerSecurityDefinition.Scope[scopes.size()];
+    //     swaggerApiSecDefScopesArr = scopes.toArray(swaggerApiSecDefScopesArr);
+        
+    //     securityDefinition.setScopes(swaggerApiSecDefScopesArr);
+        
+    //     securityDefinitions.add(securityDefinition);
+        
+        
+    //     SwaggerApi.SwaggerSecurityDefinition[] swaggerApiSecDefArr = new SwaggerApi.SwaggerSecurityDefinition[securityDefinitions.size()];
+    //     swaggerApiSecDefArr = securityDefinitions.toArray(swaggerApiSecDefArr);
+        
+        
+    //     api.setSecurityDefinitions(swaggerApiSecDefArr);
+        
+    //     apis.add(api);
+        
+    //     SwaggerApi[] swaggerApiArr = new SwaggerApi[apis.size()];
+    //     swaggerApiArr = apis.toArray(swaggerApiArr);
+        
+    //     this.WriteObjectToFile(inputParameters.getOutputFile(),swaggerApiArr);
+        
+    //     return;
+    // }
+    
+    // public void GetSample() throws IOException {
+        
+    //     File outputFile = new File("./test.txt");
+    //     FileWriter outputWriter = new FileWriter(outputFile, false);
+        
+        
+    //     Swagger swagger = new Swagger();
+    //     swagger.setSwagger("2.0");
+    //     swagger.setBasePath("https://www.dynamicapis.com");
+        
+        
+    //     // //String type, Scopes scopes, String flow, String authorizationUrl, String tokenUrl, String in, String name
+    //     // SecurityDefinition definition = new SecurityDefinition("oauth2", null,"implicit","https://www.dynamicapis.com",null,null,null);
+       
+    //     // SecurityDefinition[] swaggerSecDefArr = new SecurityDefinition[1];
+    //     // swaggerSecDefArr[0] = definition;
+        
+    //     //definitions.setSecurityDefinitions(swaggerSecDefArr);
+        
+    //     swagger.setSecurityDefinitions(new SecurityDefinitions());
+        
+    //     System.out.println(swagger.toString());
+        
+    //     com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+    //     String objectAsJsonString = objectMapper.writeValueAsString(swagger);
+    //     outputWriter.write(objectAsJsonString);
+    //     outputWriter.close();
+        
+    // }
     
     public void Generate() throws RuntimeException, FileNotFoundException, IOException {
         
-        List<SwaggerApi> apis = new ArrayList<SwaggerApi>();
+        //first
+        this.GatherAllApplicableComments();
         
-        SwaggerApi api = new SwaggerApi();
-        api.setRoute("/api/v1/something");
-        
-        List<SwaggerApi.SwaggerSecurityDefinition> securityDefinitions = new ArrayList<SwaggerApi.SwaggerSecurityDefinition>();
-        
-        SwaggerApi.SwaggerSecurityDefinition securityDefinition = api.new SwaggerSecurityDefinition();
-        securityDefinition.setType("oauth");
+        //new input file to work with is the this.rawFile
+        this.TokenizeRawData();
         
         
-        List<SwaggerApi.SwaggerSecurityDefinition.Scope> scopes = new ArrayList<SwaggerApi.SwaggerSecurityDefinition.Scope>();
-        SwaggerApi.SwaggerSecurityDefinition.Scope scope = securityDefinition.new Scope();
-        scope.setName("readaccess");
-        scope.setDescription("sets the read access");
-        
-        scopes.add(scope);
-        
-        SwaggerApi.SwaggerSecurityDefinition.Scope[] swaggerApiSecDefScopesArr = new SwaggerApi.SwaggerSecurityDefinition.Scope[scopes.size()];
-        swaggerApiSecDefScopesArr = scopes.toArray(swaggerApiSecDefScopesArr);
-        
-        securityDefinition.setScopes(swaggerApiSecDefScopesArr);
-        
-        securityDefinitions.add(securityDefinition);
-        
-        
-        SwaggerApi.SwaggerSecurityDefinition[] swaggerApiSecDefArr = new SwaggerApi.SwaggerSecurityDefinition[securityDefinitions.size()];
-        swaggerApiSecDefArr = securityDefinitions.toArray(swaggerApiSecDefArr);
-        
-        
-        api.setSecurityDefinitions(swaggerApiSecDefArr);
-        
-        apis.add(api);
-        
-        SwaggerApi[] swaggerApiArr = new SwaggerApi[apis.size()];
-        swaggerApiArr = apis.toArray(swaggerApiArr);
-        
-        this.WriteObjectToFile(inputParameters.getOutputFile(),swaggerApiArr);
-        
-        return;
+        //this.GenerateSample();
         
         
 //         List<String> fileList = this.obtainListOfFilesFromDirectory();        
@@ -83,19 +136,81 @@ public class Processor {
 //         return;
     }
     
-    private void WriteObjectToFile(String outputFileAbsolutePath, SwaggerApi[] apis) throws IOException{
-        File outputFile = new File(outputFileAbsolutePath);
-        FileWriter outputWriter = new FileWriter(outputFile, false); // true to append
-                                                             // false to overwrite.
+    private void TokenizeRawData() throws FileNotFoundException, IOException{
+        Map<String,Object> tokenizedMap = new HashMap<String,Object>();
         
-        String objectAsJsonString = "";
+        String sourcecode = this.readEntireFile(this.rawFile);
+                
+        BufferedReader bufReader = new BufferedReader(new StringReader(sourcecode));
+        String line = null;
+        while( (line=bufReader.readLine()) != null )
+        {
+            
+            String mapKey = null;
+            Map<String,String> objectMap = new HashMap<String,String>();
+            
+            if(line.toLowerCase().contains("[swaggersecuritydefinition(")){
+                mapKey = "SwaggerSecurityDefinition";
+            }
+            
+            //use regex to get the strings between the parenthesis
+            String regexString = "\\((.*?)\\)";
+            Pattern pattern = Pattern.compile(regexString);
+            Matcher matcher = pattern.matcher(line);
+            while (matcher.find()) {
+              String textInBetween = matcher.group(1); // Since (.*?) is capturing group 1
+              
+              String[] tokens = textInBetween.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+              for(String t : tokens) {
+                //System.out.println("> "+t);
+                
+                // String[] keyTokens = t.split("=");
+                
+                // objectMap.put(keyTokens[0].trim(),keyTokens[1].trim());
+                
+                //split on equals
+                String[] tokens2 = t.split("\\=(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+                objectMap.put(tokens2s[0].trim(),tokens2[1].trim());    
+                
+              }
+              
+            }
+            
+            tokenizedMap.put(mapKey,(Object)objectMap);
+            
+            //Convert each line into a Map<String, Object>
+            //String is the object (ie: SwaggerSecurity)
+            //Object is the tokenized map within the parenthesis
+        }
         
-        com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-        objectAsJsonString = objectMapper.writeValueAsString(apis);
         
-        outputWriter.write(objectAsJsonString);
-        outputWriter.close();
+        
+        this.WriteToFile(this.tokenizedFile, tokenizedMap.toString());
+        
     }
+    
+    private void GatherAllApplicableComments() throws FileNotFoundException, IOException {
+        List<String> fileList = this.obtainListOfFilesFromDirectory();
+        StringBuilder sb = new StringBuilder();
+                for (String filePathAsString : fileList) {
+            this.obtainRawInput(sb,filePathAsString);
+		}
+		this.WriteToFile(this.rawFile, sb);
+    }
+    
+    // private void WriteObjectToFile(String outputFileAbsolutePath, SwaggerApi[] apis) throws IOException{
+    //     File outputFile = new File(outputFileAbsolutePath);
+    //     FileWriter outputWriter = new FileWriter(outputFile, false); // true to append
+    //                                                          // false to overwrite.
+        
+    //     String objectAsJsonString = "";
+        
+    //     com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+    //     objectAsJsonString = objectMapper.writeValueAsString(apis);
+        
+    //     outputWriter.write(objectAsJsonString);
+    //     outputWriter.close();
+    // }
     
     private void WriteToFile(String outputFileAbsolutePath, StringBuilder content) throws IOException{
         File outputFile = new File(outputFileAbsolutePath);
@@ -109,6 +224,14 @@ public class Processor {
         // objectAsJsonString = objectMapper.writeValueAsString(this.inputParameters);
         
         // outputWriter.write(objectAsJsonString);
+        outputWriter.close();
+    }
+    
+    private void WriteToFile(String outputFileAbsolutePath, String outputToWrite) throws IOException{
+        File outputFile = new File(outputFileAbsolutePath);
+        FileWriter outputWriter = new FileWriter(outputFile, false); // true to append
+                                                        // false to overwrite.
+        outputWriter.write(outputToWrite);
         outputWriter.close();
     }
     

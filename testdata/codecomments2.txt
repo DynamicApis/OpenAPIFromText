@@ -1,7 +1,0 @@
-/*
---the response object
-[SwaggerObject(Type = "Response_v1", Name = "Response_v1", Description = "The response v1")]
---the response object property
-[SwaggerObjectProperty(Type = "Boolean", Name = "isSuccessful", Description = "Specifies if the response was successful or not", Required = false)]
-*/
-this is whatever is left over in the text file outside of the comments
