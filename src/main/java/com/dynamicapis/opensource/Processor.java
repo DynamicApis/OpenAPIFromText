@@ -170,7 +170,7 @@ public class Processor {
                 
                 //split on equals
                 String[] tokens2 = t.split("\\=(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                objectMap.put(tokens2s[0].trim(),tokens2[1].trim());    
+                //objectMap.put(tokens2s[0].trim(),tokens2[1].trim());    
                 
               }
               
