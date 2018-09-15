@@ -63,21 +63,19 @@ jobs:
         - ~/.go_workspace
         - ~/.gradle
         - ~/.cache/bower
+    - run:
+          name: build and package
+          command: bash build.sh
+      - store_artifacts:
+          path: /tmp/circleci-test-results/test-results.xml
+          prefix: tests
     # Teardown
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
     # Save test results
-    - store_test_results:
-        path: /tmp/circleci-test-results
+    #- store_test_results:
+    #    path: /tmp/circleci-test-results
     # Save artifacts
-    - store_artifacts:
-        path: /tmp/circleci-artifacts
-    - store_artifacts:
-        path: /tmp/circleci-test-results
-  test:
-    steps:
-      - run:
-          name: build
-          command: bash build.sh
-      - store_artifacts:
-          path: test-results.xml
-          prefix: tests
+    #- store_artifacts:
+    #    path: /tmp/circleci-artifacts
+    #- store_artifacts:
+    #    path: /tmp/circleci-test-results
