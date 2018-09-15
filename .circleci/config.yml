@@ -73,3 +73,11 @@ jobs:
         path: /tmp/circleci-artifacts
     - store_artifacts:
         path: /tmp/circleci-test-results
+  test:
+    steps:
+      - run:
+          name: build
+          command: bash build.sh
+      - store_artifacts:
+          path: test-results.xml
+          prefix: tests
