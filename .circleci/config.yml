@@ -126,6 +126,10 @@ jobs:
           name: Get Java Version currently installed
           command: java -version
       - run:
+          name: Create target directory
+          command: |
+            mkdir target
+      - run:
           name: Compile Java
           command: |
             javac -sourcepath ./src/main/java -cp $(find ./dependencies/ -name '*.jar'|paste -sd: -) ./src/main/java/com/dynamicapis/opensource/*.java -d target
