@@ -39,7 +39,7 @@ jobs:
     # 'See docs on artifact collection here https://circleci.com/docs/2.0/artifacts/'
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
     - run: pwd
-    - run: cd "/home/ubuntu/DynamicApis/OpenAPIFromText"
+    - run: cd workingDir\$
     - run: javac -sourcepath "./src/main/java" -cp $(find "./dependencies/" -name '*.jar'|paste -sd: -) "./src/main/java/com/dynamicapis/opensource/*.java" -d target
     - run: jar cvfm "./target/openapift.jar" "./manifest.txt" -C "./target/" .
     
