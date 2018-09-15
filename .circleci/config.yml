@@ -119,3 +119,6 @@ jobs:
       - run:
           name: Print working directory
           command: pwd
+      - run:
+          name: List Directory Contents
+          command: ls -l
