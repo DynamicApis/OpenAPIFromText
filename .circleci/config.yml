@@ -79,10 +79,10 @@ jobs:
     - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
       command: /sbin/init
     steps:
-      - checkout
-      - run: 
-          name: Print working directory
-          command: pwd
+    - checkout
+    - run: 
+        name: Print working directory
+        command: pwd
    #- run: pwd
    # - run: cd workingDir\$
    # - run: javac -sourcepath "./src/main/java" -cp $(find "./dependencies/" -name '*.jar'|paste -sd: -) "./src/main/java/com/dynamicapis/opensource/*.java" -d target
