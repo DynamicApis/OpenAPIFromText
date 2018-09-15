@@ -64,7 +64,7 @@ jobs:
         - ~/.gradle
         - ~/.cache/bower
     - run:
-          name: build and package
+          name: "build and package"
           command: bash build.sh
       - store_artifacts:
           path: /tmp/circleci-test-results/test-results.xml
