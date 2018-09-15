@@ -38,9 +38,10 @@ jobs:
     # In many cases you can simplify this from what is generated here.
     # 'See docs on artifact collection here https://circleci.com/docs/2.0/artifacts/'
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
-    - run: cd /home/ubuntu/DynamicApis/OpenAPIFromText
-    - run: javac -sourcepath ./src/main/java -cp $(find "./dependencies/" -name '*.jar'|paste -sd: -) ./src/main/java/com/dynamicapis/opensource/*.java -d target
-    - run: jar cvfm ./target/openapift.jar ./manifest.txt -C ./target/ .
+    - run: pwd
+    - run: cd "/home/ubuntu/DynamicApis/OpenAPIFromText"
+    - run: javac -sourcepath "./src/main/java" -cp $(find "./dependencies/" -name '*.jar'|paste -sd: -) "./src/main/java/com/dynamicapis/opensource/*.java" -d target
+    - run: jar cvfm "./target/openapift.jar" "./manifest.txt" -C "./target/" .
     
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
