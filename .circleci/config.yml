@@ -133,6 +133,10 @@ jobs:
           name: Compile Java
           command: |
             javac -sourcepath ./src/main/java -cp $(find ./dependencies/ -name '*.jar'|paste -sd: -) ./src/main/java/com/dynamicapis/opensource/*.java -d target
+      - run:
+          name: List Target Directory Contents
+          command: |
+            ls ./target -l
       #     command: javac -sourcepath "./src/main/java" -cp $(find "./dependencies/" -name '*.jar'|paste -sd: -) "./src/main/java/com/dynamicapis/opensource/*.java" -d target
       # - run:
       #     name: Compile Jar
