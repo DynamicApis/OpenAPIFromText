@@ -134,6 +134,10 @@ jobs:
           command: |
             javac -sourcepath ./src/main/java -cp $(find ./dependencies/ -name '*.jar'|paste -sd: -) ./src/main/java/com/dynamicapis/opensource/*.java -d target
       - run:
+          name: Compile Java
+          command: |
+             jar cvfm ./target/openapift.jar ./manifest.txt -C ./target/ .
+      - run:
           name: List Target Directory Contents
           command: |
             ls ./target -l
