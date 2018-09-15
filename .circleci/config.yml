@@ -122,3 +122,9 @@ jobs:
       - run:
           name: List Directory Contents
           command: ls -l
+      - run:
+          name: Compile Java
+          command: javac -sourcepath "./src/main/java" -cp $(find "./dependencies/" -name '*.jar'|paste -sd: -) "./src/main/java/com/dynamicapis/opensource/*.java" -d target
+      - run:
+          name: Build Jar
+          command: jar cvfm "./target/openapift.jar" "./manifest.txt" -C "./target/" .
