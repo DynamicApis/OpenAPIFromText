@@ -15,6 +15,7 @@ import java.io.FileWriter;
 import java.util.UUID;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.regex.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -137,7 +138,7 @@ public class Processor {
     }
     
     private void TokenizeRawData() throws FileNotFoundException, IOException{
-        Map<String,Object> tokenizedMap = new HashMap<String,Object>();
+        Map<String,Object> tokenizedMap = new TreeMap<String,Object>();
         
         String sourcecode = this.readEntireFile(this.rawFile);
                 
@@ -147,46 +148,62 @@ public class Processor {
         {
             
             String mapKey = null;
-            Map<String,String> objectMap = new HashMap<String,String>();
             
-            if(line.toLowerCase().contains("[swaggersecuritydefinition(")){
-                mapKey = "SwaggerSecurityDefinition";
-            }
-            
-            //use regex to get the strings between the parenthesis
-            String regexString = "\\((.*?)\\)";
+            //get the key
+            String regexString = "(?!\\[)(.*)(?=\\()";
             Pattern pattern = Pattern.compile(regexString);
             Matcher matcher = pattern.matcher(line);
             while (matcher.find()) {
-              String textInBetween = matcher.group(1); // Since (.*?) is capturing group 1
-              
-              String[] tokens = textInBetween.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-              for(String t : tokens) {
-                //System.out.println("> "+t);
-                
-                // String[] keyTokens = t.split("=");
-                
-                // objectMap.put(keyTokens[0].trim(),keyTokens[1].trim());
-                
-                //split on equals
-                String[] tokens2 = t.split("\\=(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                //objectMap.put(tokens2s[0].trim(),tokens2[1].trim());    
-                
-              }
-              
+                if(matcher.start()==1){
+                    mapKey = matcher.group(0);
+                }
             }
             
-            tokenizedMap.put(mapKey,(Object)objectMap);
+            if(mapKey != null){
+                System.out.println("Will work on "+ mapKey);
+                
+                Map<String,String> objectMap = this.TokenProperties(line);
+                
+                tokenizedMap.put(mapKey,objectMap);
+            }
             
-            //Convert each line into a Map<String, Object>
-            //String is the object (ie: SwaggerSecurity)
-            //Object is the tokenized map within the parenthesis
         }
         
         
         
         this.WriteToFile(this.tokenizedFile, tokenizedMap.toString());
         
+    }
+    
+    private Map<String,String> TokenProperties(String properties){
+        Map<String,String> objectMap = new HashMap<String,String>();
+        
+        String regexString = "(?<=\\()(.*)(?=\\))";
+        Pattern pattern = Pattern.compile(regexString);
+        Matcher matcher = pattern.matcher(properties);
+        while (matcher.find()) {
+          
+            System.out.print("Start index: " + matcher.start());
+            System.out.print(" End index: " + matcher.end() + " ");
+            System.out.println(matcher.group(1));
+            
+            //split by comma but not the comma within the value
+            String[] tokens = matcher.group(1).split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+            for(String token : tokens){
+                
+                //now split on equals
+                String[] splitKvP = token.split("=(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",-1);
+                
+                String key = splitKvP[0].trim();
+                String value = splitKvP[1].trim();
+                
+                objectMap.put(key,value);    
+                
+            }
+            
+        }
+        
+        return objectMap;
     }
     
     private void GatherAllApplicableComments() throws FileNotFoundException, IOException {
