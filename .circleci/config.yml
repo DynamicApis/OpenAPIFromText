@@ -1,0 +1,49 @@
+version: 2
+jobs:
+  build:
+    docker: # use the docker executor type; machine and macos executors are also supported
+      - image: circleci/openjdk:8-jdk-node-browsers # the primary container, where your job's commands are run
+    steps:
+      - run:
+          name: Create Artifacts Directory
+          command: |
+            mkdir /tmp/artifacts
+      - checkout # check out the code in the project directory
+      - run:
+          name: Print working directory
+          command: pwd
+      - run:
+          name: List Directory Contents
+          command: ls -l
+      - run:
+          name: Get Java Version currently installed
+          command: java -version
+      - run:
+          name: Create target directory
+          command: |
+            mkdir target
+      - run:
+          name: Compile Java
+          command: |
+            javac -sourcepath src/main/java -cp $(find dependencies/ -name '*.jar'|paste -sd: -) src/main/java/com/dynamicapis/opensource/*.java -d target
+      - run:
+          name: Compile Jar
+          command: |
+             jar cvfm target/openapift.jar manifest.txt -C target/ .
+      - run:
+          name: List Target Directory Contents
+          command: |
+            ls ./target -l
+      - run:
+          name: Run Test
+          command: |
+            java -jar target/openapift.jar -codecomments true -input testdata/codecomments1.txt -output openapidoc.json
+      - run:
+          name: List Directory Contents Again
+          command: ls -l
+      - run:
+          name: Copy Test Results to Artifacts Directory
+          command: |
+            mv test-raw*.txt /tmp/artifacts/
+      - store_artifacts:
+          path: /tmp/artifacts
