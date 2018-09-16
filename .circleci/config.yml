@@ -44,6 +44,6 @@ jobs:
       - run:
           name: Copy Test Results to Artifacts Directory
           command: |
-            mv openapidoc.json /tmp/artifacts/openapidoc.json
+            mv test-raw*.txt /tmp/artifacts/
       - store_artifacts:
           path: /tmp/artifacts
