@@ -25,11 +25,11 @@ jobs:
       - run:
           name: Compile Java
           command: |
-            javac -sourcepath ./src/main/java -cp $(find ./dependencies/ -name '*.jar'|paste -sd: -) ./src/main/java/com/dynamicapis/opensource/*.java -d target
+            javac -sourcepath src/main/java -cp $(find dependencies/ -name '*.jar'|paste -sd: -) src/main/java/com/dynamicapis/opensource/*.java -d target
       - run:
           name: Compile Jar
           command: |
-             jar cvfm ./target/openapift.jar ./manifest.txt -C ./target/ .
+             jar cvfm target/openapift.jar manifest.txt -C target/ .
       - run:
           name: List Target Directory Contents
           command: |
@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Run Test
           command: |
-            java -jar ./target/openapift.jar -codecomments true -input ./testdata/codecomments1.txt -output ./openapidoc.json
+            java -jar target/openapift.jar -codecomments true -input testdata/codecomments1.txt -output openapidoc.json
       - run:
           name: List Directory Contents Again
           command: ls -l
