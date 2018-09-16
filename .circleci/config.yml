@@ -39,8 +39,11 @@ jobs:
           command: |
             java -jar ./target/openapift.jar -codecomments true -input ./testdata/codecomments1.txt -output ./openapidoc.json
       - run:
+          name: List Directory Contents Again
+          command: ls -l
+      - run:
           name: Copy Test Results to Artifacts Directory
           command: |
-            mv ./openapidoc.json /tmp/artifacts/openapidoc.json
+            mv openapidoc.json /tmp/artifacts/openapidoc.json
       - store_artifacts:
           path: /tmp/artifacts
